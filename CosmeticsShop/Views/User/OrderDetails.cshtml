@@ -1,0 +1,53 @@
+﻿@model List<CosmeticsShop.Models.OrderDetail>
+@{
+    ViewBag.Title = "Order detail";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<div class="breadcrumbs">
+    <div class="container">
+        <ol class="breadcrumb breadcrumb1 animated wow slideInLeft animated" data-wow-delay=".5s" style="visibility: visible; animation-delay: 0.5s; animation-name: slideInLeft;">
+            <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+            <li class="active">Order detail</li>
+        </ol>
+    </div>
+</div>
+<!--content-->
+<div class="products">
+    <div class="container">
+        <h2>Order detail: @Request.Params["ID"]</h2>
+        <div class="col-md-9">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product name</th>
+                        <th>Image</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td><img src="~/Content/images/@item.ProductImage" alt="Alternate Text" style="width:50px;height:80px" /></td>
+                                <td>$@item.ProductPrice</td>
+                                <td>@item.Quantity</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                Not found...
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

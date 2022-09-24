@@ -1,0 +1,216 @@
+﻿@model List<CosmeticsShop.Models.Order>
+@{
+    ViewBag.Title = "My order";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<div class="breadcrumbs">
+    <div class="container">
+        <ol class="breadcrumb breadcrumb1 animated wow slideInLeft animated" data-wow-delay=".5s" style="visibility: visible; animation-delay: 0.5s; animation-name: slideInLeft;">
+            <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+            <li class="active">Order</li>
+        </ol>
+    </div>
+</div>
+<!--content-->
+<div class="products">
+    <div class="container">
+        <h2>My order</h2>
+        <div class="col-md-9">
+            <ul class="nav nav-tabs" id="myTab">
+                <li class="active"><a href="#processing" data-toggle="tab">Processing</a></li>
+                <li><a href="#processed" data-toggle="tab">Processed</a></li>
+                <li><a href="#delivering" data-toggle="tab">Delivering</a></li>
+                <li><a href="#complete" data-toggle="tab">Complete</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="processing">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Order date</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Where(x => x.Status == "Processing").Count() > 0)
+                            {
+                                foreach (var item in Model.Where(x => x.Status == "Processing"))
+                                {
+                                    <tr>
+                                        <td>@item.ID</td>
+                                        <td>@item.DateOrder.Value.ToString("dd/MM/yyyy")</td>
+                                        @if (item.IsPaid.Value)
+                                        {
+                                            <td><span class="label label-success">Paid</span></td>
+                                        }
+                                        else
+                                        {
+                                            <td><span class="label label-warning">Unpaid</span></td>
+                                        }
+                                        <td><span class="label label-success">Processed</span></td>
+                                        <td><span class="label label-warning">Not delivery</span></td>
+                                        <td>
+                                            <a href="/User/OrderDetails/?ID=@item.ID" class="btn btn-outline-secondary">Detail</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>
+                                        Not found...
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane" id="processed">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Order date</th>
+                                <th>Recived date (Expected)</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Delivery status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Where(x => x.Status == "Processed").Count() > 0)
+                            {
+                                foreach (var item in Model.Where(x => x.Status == "Processed"))
+                                {
+                                    <tr>
+                                        <td>@item.ID</td>
+                                        <td>@item.DateOrder.Value.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.DateShip.Value.ToString("dd/MM/yyyy")</td>
+                                        @if (item.IsPaid.Value)
+                                        {
+                                            <td><span class="label label-success">Paid</span></td>
+                                        }
+                                        else
+                                        {
+                                            <td><span class="label label-warning">Unpaid</span></td>
+                                        }
+                                        <td><span class="label label-success">Processed</span></td>
+                                        <td><span class="label label-warning">Not delivery</span></td>
+                                        <td>
+                                            <a href="/User/OrderDetails/?ID=@item.ID" class="btn btn-outline-secondary">Detail</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>
+                                        Not found...
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane" id="delivering">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Order date</th>
+                                <th>Recived date (Expected)</th>
+                                <th>Payment</th>
+                                <th>Delivery status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Where(x => x.Status == "Delivering").Count() > 0)
+                            {
+                                foreach (var item in Model.Where(x => x.Status == "Delivering"))
+                                {
+                                    <tr>
+                                        <td>@item.ID</td>
+                                        <td>@item.DateOrder.Value.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.DateShip.Value.ToString("dd/MM/yyyy")</td>
+                                        @if (item.IsPaid.Value)
+                                        {
+                                            <td><span class="label label-success">Paid</span></td>
+                                        }
+                                        else
+                                        {
+                                            <td><span class="label label-warning">Unpaid</span></td>
+                                        }
+                                        <td><a href="/User/Complete/@item.ID">Delivering (click here if you receive the goods)</a></td>
+                                        <td>
+                                            <a href="/User/OrderDetails/?ID=@item.ID" class="btn btn-outline-secondary">Detail</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>
+                                        Not found...
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane" id="complete">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Order date</th>
+                                <th>Recived date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Where(x => x.Status == "Complete").Count() > 0)
+                            {
+                                foreach (var item in Model.Where(x => x.Status == "Complete"))
+                                {
+                                    <tr>
+                                        <td>@item.ID</td>
+                                        <td>@item.DateOrder.Value.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.DateShip.Value.ToString("dd/MM/yyyy")</td>
+                                        <td><span class="label label-success">Complete</span></td>
+                                        <td>
+                                            <a href="/User/OrderDetails/?ID=@item.ID" class="btn btn-outline-secondary">Detail</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>
+                                        Not found...
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#myTab a:first').tab('show')
+    })
+</script>

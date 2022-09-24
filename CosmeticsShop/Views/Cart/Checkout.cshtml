@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewBag.Title = "Checkout";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+
+    List<CosmeticsShop.Models.ItemCart> itemCarts = Session["Cart"] as List<CosmeticsShop.Models.ItemCart>;
+}
+<script>
+    $(document).ready(function () {
+        $('.qty').on('keydown', function (e) {
+            e.preventDefault();
+        });
+        $('.qty').change(function () {
+            var ID = $(this).data("id");
+            var Quantity = $(this).val();
+            $.ajax({
+                url: '/Cart/UpdateQuantity',
+                data: {
+                    ProductID: ID,
+                    Quantity: Quantity
+                },
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.update == true) {
+                        $.notify("Update successful!", "success");
+
+                        $.ajax({
+                            url: '/Cart/GetSubTotal',
+                            data: {
+                                ProductID: ID
+                            },
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function (response) {
+                                $("#" + ID).html("$" + response.SubTotal)
+                            },
+                        });
+
+                        $.ajax({
+                            url: '/Cart/GetTotal',
+                            data: {
+                                ProductID: ID
+                            },
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function (response) {
+                                $(".total-cart").html("Total: $" + response.Total)
+                            },
+                        });
+
+                        $.ajax({
+                            url: '/Cart/GetTotalCart',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function (response) {
+                                $(".simpleCart_total").html("$" + response.TotalPrice + " (" + response.TotalQuantity + ")")
+                            },
+                        });
+                    } else if (response.remove == true) {
+                        $.notify("Delete successful!", "success");
+                        setTimeout(function () { location.reload(); }, 1000);
+                    }
+                    else if (response.status == false) {
+                        $.notify("Quantity is not enough!", "error");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        $.notify("Error!", "error");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                },
+            });
+        })
+    });
+</script>
+<div class="breadcrumbs">
+    <div class="container">
+        <ol class="breadcrumb breadcrumb1 animated wow slideInLeft animated" data-wow-delay=".5s" style="visibility: visible; animation-delay: 0.5s; animation-name: slideInLeft;">
+            <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+            <li class="active">Cart</li>
+        </ol>
+    </div>
+</div>
+<!---->
+<div class="container">
+    <div class="check-out">
+        <h2>Cart</h2>
+        @if (itemCarts != null && itemCarts.Count > 0)
+        {
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+                @foreach (var item in itemCarts)
+                {
+                    <tr>
+                        <td class="ring-in">
+                            <a href="/Product/Details/@item.ProductID" class="at-in"><img src="~/Content/images/@item.ProductImage" class="img-responsive" alt=""></a>
+                            <div class="sed">
+                                <h5>@item.ProductName</h5>
+                            </div>
+                            <div class="clearfix"> </div>
+                        </td>
+                        <td class="check"><input type="number" class="qty" data-id="@item.ProductID" value="@item.Quantity" style="width:50px" min="0"></td>
+                        <td>$@item.ProductPrice.ToString("#,##")</td>
+                        <td id="@item.ProductID">$@((item.ProductPrice * item.Quantity).ToString("#,##"))</td>
+                        <td><a href="/Cart/RemoveItem?ProductId=@item.ProductID" class="btn btn-warning">Remove item</a></td>
+                    </tr>
+                }
+                <tr>
+                    <th><a href="/Cart/RemoveAll" class="btn btn-danger">Remove all</a></th>
+                </tr>
+                <tr>
+                    <th class="total-cart">Total: $@itemCarts.Sum(x => x.Quantity * x.ProductPrice).ToString("#,##")</th>
+                </tr>
+            </table>
+            if (Session["User"] == null)
+            {
+                <a href="/Home/SignIn" class=" to-buy">Sign in to buy</a>
+            }
+            else
+            {
+                <form action="/Cart/AddOrder" method="post">
+                    <input type="hidden" name="payment" value="paypal" />
+                    <p>Payment method: <b>Paypal</b></p>
+
+                    <button class="to-buy btn btn-warning">BUY NOW</button>
+                </form>
+            }
+        }
+        else
+        {
+            <h3> Cart is empty</h3>
+            <div class="clearfix">
+            </div>
+        }
+    </div>
+</div>

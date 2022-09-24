@@ -1,0 +1,105 @@
+﻿@model List<CosmeticsShop.Models.Product>
+@{
+    ViewBag.Title = "Product list";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Product Manage</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                @if (string.IsNullOrEmpty(Request.Params["keyword"]))
+                {
+                    <h3 class="card-title">Product List</h3>
+                }
+                else
+                {
+                    <h3 class="card-title">Product list with keyword "@Request.Params["keyword"]"</h3>
+                }
+                <div class="card-tools">
+                    <form action="/ProductManage/" method="get">
+                        <div class="input-group input-group-sm" style="width: 150px;">
+                            <input type="text" name="keyword" class="form-control float-right" placeholder="Search..." required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <a href="/ProductManage/Add" class="btn btn-outline-success col-2">Add new</a>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Image</th>
+                            <th>Created by</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.ID</td>
+                                    <td>@item.Name</td>
+                                    <td><img src="~/Content/images/@item.Image1" alt="Alternate Text" style="width:50px;height:80px" /></td>
+                                    <td>@item.User.Name</td>
+                                    <td>$@item.Price.Value.ToString("#,##")</td>
+                                    @if (item.IsActive.Value)
+                                    {
+                                        <td><span class="badge bg-success">Active</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge bg-danger">Block</span></td>
+                                    }
+                                    <td>
+                                        @if (item.IsActive.Value)
+                                        {
+                                            <button class="btn btn-outline-danger" onclick="location.href='/ProductManage/ToggleActive/@item.ID'">Block</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-outline-success" onclick="location.href='/ProductManage/ToggleActive/@item.ID'">Active</button>
+                                        }
+                                        <button class="btn btn-primary" onclick="location.href='/ProductManage/Details/@item.ID'">Detail/Edit</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>
+                                    Not found...
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>

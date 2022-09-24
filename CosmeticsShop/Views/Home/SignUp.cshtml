@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "Sign up";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<div class="breadcrumbs">
+    <div class="container">
+        <ol class="breadcrumb breadcrumb1 animated wow slideInLeft animated" data-wow-delay=".5s" style="visibility: visible; animation-delay: 0.5s; animation-name: slideInLeft;">
+            <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+            <li class="active">Sign up</li>
+        </ol>
+    </div>
+</div>
+<div class="container">
+    <div class="register">
+        <h2>Sign up</h2>
+        @using (Html.BeginForm("SignUp", "Home", FormMethod.Post))
+        {
+            <div class="col-md-6  register-top-grid">
+                <h3>@ViewBag.Message</h3>
+                <div class="mation">
+                    <span>Full name</span>
+                    <input type="text" name="Name" required>
+
+                    <span>Email</span>
+                    <input type="text" name="Email" required>
+
+                    <span>Phone number</span>
+                    <input type="text" name="Phone" required>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+            <div class=" col-md-6 register-bottom-grid">
+                <div class="mation">
+                    <span>Password</span>
+                    <span>Minimum eight characters, at least one letter, one number and one special character:</span>
+                    <input type="password" name="Password" required id="Password" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@("@")$!%*#?&])[A-Za-z\d@("@")$!%*#?&]{8,}$">
+                    <span>Re enter password</span>
+                    <input type="password" name="PasswordMatch" required oninput="check(this)">
+                    <span>Address</span>
+                    <textarea class="form-control" name="Address" required></textarea>
+                </div>
+            </div>
+            <div class=" col-md-6 register-bottom-grid">
+                <div class="mation">
+                    <input type="submit" value="Sign up" class="btn btn-default">
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function check(input) {
+        if (input.value != document.getElementById('Password').value) {
+            input.setCustomValidity('Password does not match');
+        } else {
+            input.setCustomValidity('');
+        }
+    }
+</script>

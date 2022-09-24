@@ -1,0 +1,149 @@
+﻿<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>SKIN TYPE QUIZ</title>
+    <link href="~/Content/css/quiz.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="quiz-container" id="quiz">
+        <div class="quiz-header">
+            <h2 id="questions">questions</h2>
+            <ul>
+                <li>
+                    <input type="radio" name="answer" class="answer" id="a"><label for="a" id="a_text">a</label></input>
+                </li>
+                <li>
+                    <input type="radio" name="answer" class="answer" id="b"><label for="b" id="b_text">b</label></input>
+                </li>
+                <li>
+                    <input type="radio" name="answer" class="answer" id="c"><label for="c" id="c_text">c</label></input>
+                </li>
+                <li>
+                    <input type="radio" name="answer" class="answer" id="d"><label for="d" id="d_text">d</label></input>
+                </li>
+            </ul>
+        </div>
+        <button type="button" id="button">Submit</button>
+    </div>
+    <script>
+        const quiz_Data = [
+            {
+                question: "After I wash my face, my skin feels…",
+                a: "Tight and uncomfortable",
+                b: "Is shiny by lunchtime!",
+                c: "Feels a little tight, but mostly ok, but then gets shiny by the afternoon",
+                d: "Is red and sometimes feels itchy",
+                correct: "d"
+            },
+            {
+                question: "My pores...",
+                a: "What pores? I barely even notice them.",
+                b: "Look HUGE! All the time.",
+                c: "On my nose I hate! But I don’t even see them on my cheeks!",
+                d: "Who cares about pores! My face is too red/splotchy to notice!",
+                correct: "a"
+            },
+            {
+                question: "Overall, my skin...",
+                a: "Can be a little flaky, but is definitely dull, with little lines and wrinkles.",
+                b: "Looks like a shiny orange peel!",
+                c: "Seems ok. I mean a little oil, a little flaky. Is that ok?",
+                d: "Seems flaky, so I scrub it, and it just gets red and flakier looking?",
+                correct: "a"
+            },
+            {
+                question: " When I touch my face...",
+                a: "My skin feels a little rough and wrinkled.",
+                b: "I feel like a need a napkin to wipe my greasy fingers off!",
+                c: "My cheeks feel a little like sandpaper, but my forehead is slick!",
+                d: "I can’t touch my face, or it turns red!",
+                correct: "c"
+            },
+            {
+                question: "My go-to skincare product that I better not go without is...",
+                a: "Heavier moisturizer!",
+                b: "My foaming cleanser",
+                c: "A lightweight moisturizer",
+                d: "Am I allowed to pick an ice cube over a product?",
+                correct: "c"
+            }
+        ]
+        let result = [];
+
+        const questionEl = document.getElementById('questions')
+        const answerEl = document.querySelectorAll('.answer')
+        const quiz = document.getElementById('quiz')
+        const a_text = document.getElementById('a_text')
+        const b_text = document.getElementById("b_text")
+        const c_text = document.getElementById('c_text')
+        const d_text = document.getElementById('d_text')
+        const button = document.getElementById('button')
+
+        let currentQuiz = 0;
+        let score = 0
+        loadQuiz();
+
+        function loadQuiz() {
+            deleteCheck()
+            const currentQuizData = quiz_Data[currentQuiz]
+            if (currentQuizData) {
+                questionEl.innerText = currentQuizData.question
+                a_text.innerText = currentQuizData.a
+                b_text.innerText = currentQuizData.b
+                c_text.innerText = currentQuizData.c
+                d_text.innerText = currentQuizData.d
+            }
+        }
+        var id = 0;
+        function checkAnswer() {
+            let answer = undefined
+            answerEl.forEach(el => {
+                if (el.checked) {
+                    answer = el.id;
+                    id = el.id;
+                }
+            });
+            return answer
+        }
+
+        function deleteCheck() {
+            answerEl.forEach(el => {
+                el.checked = false;
+            })
+        }
+
+
+
+        button.addEventListener("click", () => {
+            const answer = checkAnswer()
+            result.push(quiz_Data[currentQuiz][id])
+            console.log(result)
+            if (answer) {
+
+                if (answer === quiz_Data[currentQuiz].correct) {
+                    score++
+                }
+                currentQuiz++;
+                if (currentQuiz < quiz_Data.length) {
+                    loadQuiz()
+                } else {
+                    xmlhttp = new XMLHttpRequest;
+                    xmlhttp.onreadystatechange = function () {
+                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                            var response = JSON.parse(xmlhttp.responseText);
+                            window.location.href = "/Home/Suggest?message=" + response.message;
+                        }
+                    }
+                    xmlhttp.open("POST", "/Home/Suggest");
+                    xmlhttp.setRequestHeader("Content-Type", "application/json");
+                    xmlhttp.send(JSON.stringify(result))
+                }
+            }
+
+        })
+    </script>
+</body>
+</html>

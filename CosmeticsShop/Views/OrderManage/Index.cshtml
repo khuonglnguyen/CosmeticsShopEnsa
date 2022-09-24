@@ -1,0 +1,237 @@
+﻿@model List<CosmeticsShop.Models.Order>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Order Manage</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<div class="row">
+    <div class="col-12">
+        <h4>Order List</h4>
+    </div>
+</div>
+<!-- ./row -->
+<div class="row">
+    <div class="col-12 col-sm-12">
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Processing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Processed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Delivering</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Complete</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="custom-tabs-one-tabContent">
+                    <div class="tab-pane fade show active" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Order date</th>
+                                        <th>Payment</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Where(x => x.Status == "Processing").Count() > 0)
+                                    {
+                                        foreach (var item in Model.Where(x => x.Status == "Processing"))
+                                        {
+                                            <tr>
+                                                <td>@item.ID</td>
+                                                <td>@item.DateOrder.Value.ToString("dd/MM/yyyy")</td>
+                                                @if (item.IsPaid.Value)
+                                                {
+                                                    <td><span class="badge bg-success">Paid</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><span class="badge bg-warning">Unpaid</span></td>
+                                                }
+                                                <td><span class="badge bg-warning">Processing</span></td>
+                                                <td>
+                                                    <a href="/OrderManage/Details/?ID=@item.ID" class="btn btn-outline-secondary">Detail</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                Not found...
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Order date</th>
+                                        <th>The date the customer receives the goods after shipping (Expected)</th>
+                                        <th>Payment</th>
+                                        <th>Status</th>
+                                        <th>Delivery status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Where(x => x.Status == "Processed").Count() > 0)
+                                    {
+                                        foreach (var item in Model.Where(x => x.Status == "Processed"))
+                                        {
+                                            <tr>
+                                                <td>@item.ID</td>
+                                                <td>@item.DateOrder.Value.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.DateShip.Value.ToString("dd/MM/yyyy")</td>
+                                                @if (item.IsPaid.Value)
+                                                {
+                                                    <td><span class="badge bg-success">Paid</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><span class="badge bg-warning">Unpaid</span></td>
+                                                }
+                                                <td><span class="badge bg-success">Processed</span></td>
+                                                <td><span class="badge bg-warning">Not delivery</span></td>
+                                                <td>
+                                                    <a href="/OrderManage/Details/?ID=@item.ID" class="btn btn-outline-secondary">Detail</a>
+                                                    <a href="/OrderManage/Delivering/?ID=@item.ID" class="btn btn-primary">Delivery</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                Not found...
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Order date</th>
+                                        <th>The date the customer received the goods (Expected)</th>
+                                        <th>Payment</th>
+                                        <th>Delivery status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Where(x => x.Status == "Delivering").Count() > 0)
+                                    {
+                                        foreach (var item in Model.Where(x => x.Status == "Delivering"))
+                                        {
+                                            <tr>
+                                                <td>@item.ID</td>
+                                                <td>@item.DateOrder.Value.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.DateShip.Value.ToString("dd/MM/yyyy")</td>
+                                                @if (item.IsPaid.Value)
+                                                {
+                                                    <td><span class="badge bg-success">Paid</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><span class="badge bg-warning">Unpaid</span></td>
+                                                }
+                                                <td><span class="badge bg-success">Delivering</span></td>
+                                                <td>
+                                                    <a href="/OrderManage/Details/?ID=@item.ID" class="btn btn-outline-secondary">Detail</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                Not found...
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Order date</th>
+                                        <th>Received date</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Where(x => x.Status == "Complete").Count() > 0)
+                                    {
+                                        foreach (var item in Model.Where(x => x.Status == "Complete"))
+                                        {
+                                            <tr>
+                                                <td>@item.ID</td>
+                                                <td>@item.DateOrder.Value.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.DateShip.Value.ToString("dd/MM/yyyy")</td>
+                                                <td><span class="badge bg-success">Complete</span></td>
+                                                <td>
+                                                    <a href="/OrderManage/Details/?ID=@item.ID" class="btn btn-outline-secondary">Detail</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                Not found...
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+</div>
